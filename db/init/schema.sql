@@ -233,10 +233,64 @@ INSERT INTO event_types (slug, title, description, duration_minutes, color, user
 ('team-sync', 'Team Sync', 'Weekly team synchronization meeting', 45, '#f59e0b', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'google_meet');
 
 -- Insert availability rules (Mon-Fri, 9am-5pm)
-INSERT INTO availability_rules (user_id, days_of_week, start_time, end_time) VALUES
-('11111111-1111-1111-1111-111111111111', ARRAY[1,2,3,4,5], '09:00', '17:00'),
-('22222222-2222-2222-2222-222222222222', ARRAY[1,2,3,4,5], '08:00', '16:00'),
-('33333333-3333-3333-3333-333333333333', ARRAY[1,2,3,4,5], '10:00', '18:00');
+INSERT INTO public.availability_rules (
+    user_id, 
+    days_of_week, 
+    start_time, 
+    end_time, 
+    dateoverride, 
+    is_recurring
+) VALUES 
+-- 1. Alice: Standard Mon-Fri Work Week (Recurring)
+(
+    '11111111-1111-1111-1111-111111111111', 
+    '{1,2,3,4,5}', 
+    '09:00:00', 
+    '17:00:00', 
+    NULL, 
+    TRUE
+),
+
+-- 2. Alice: Specific Date Override (Working a special shift on New Year's Day)
+-- Note: Uses the empty array '{}' to satisfy your NOT NULL constraint
+(
+    '11111111-1111-1111-1111-111111111111', 
+    '{}', 
+    '10:00:00', 
+    '15:00:00', 
+    '2026-01-01', 
+    FALSE
+),
+
+-- 3. Bob: Part-Time Mon, Wed, Fri Shift (Recurring)
+(
+    '22222222-2222-2222-2222-222222222222', 
+    '{1,3,5}', 
+    '08:00:00', 
+    '12:00:00', 
+    NULL, 
+    TRUE
+),
+
+-- 4. Carol: Weekend Shift (Recurring Sat/Sun)
+(
+    '33333333-3333-3333-3333-333333333333', 
+    '{6,0}', 
+    '10:00:00', 
+    '16:00:00', 
+    NULL, 
+    TRUE
+),
+
+-- 5. Carol: Specific Date Override (Christmas Day custom availability)
+(
+    '33333333-3333-3333-3333-333333333333', 
+    '{}', 
+    '13:00:00', 
+    '19:00:00', 
+    '2026-12-25', 
+    FALSE
+);
 
 -- Insert dummy bookings
 INSERT INTO bookings (uid, title, start_time, end_time, timezone, status, user_id, event_type_id) VALUES
@@ -254,3 +308,169 @@ INSERT INTO booking_attendees (booking_id, email, name, timezone) VALUES
 INSERT INTO notifications (user_id, booking_id, type, recipient, subject) VALUES
 ('11111111-1111-1111-1111-111111111111', (SELECT id FROM bookings WHERE uid = 'book-001'), 'BOOKING_CONFIRMATION', 'client1@example.com', 'Your meeting is confirmed'),
 ('11111111-1111-1111-1111-111111111111', (SELECT id FROM bookings WHERE uid = 'book-002'), 'BOOKING_REMINDER', 'client2@example.com', 'Meeting reminder: Product Demo');
+
+INSERT INTO public.calendars (
+    user_id,
+    integration,
+    email,
+    access_token,
+    refresh_token,
+    token_expires_at,
+    external_calendar_id,
+    is_primary,
+    is_active
+) VALUES 
+-- Row 1: Alice's Primary Google Work Calendar
+(
+    '11111111-1111-1111-1111-111111111111', -- Alice
+    'google',
+    'alice@example.com',
+    'ya29.v1_alice_google_access_token_abc123',
+    '1//0_alice_google_refresh_token_xyz987',
+    NOW() + INTERVAL '1 hour',
+    'alice@example.com',
+    TRUE,
+    TRUE
+),
+
+-- Row 2: Alice's Secondary Shared Team Calendar (Testing multi-calendar sync)
+(
+    '11111111-1111-1111-1111-111111111111', -- Alice
+    'google',
+    'alice@example.com',
+    'ya29.v1_alice_google_access_token_abc123',
+    '1//0_alice_google_refresh_token_xyz987',
+    NOW() + INTERVAL '1 hour',
+    'company.marketing#holiday@group.v.calendar.google.com',
+    FALSE, -- Secondary
+    TRUE
+),
+
+-- Row 3: Bob's Primary Outlook Calendar
+(
+    '22222222-2222-2222-2222-222222222222', -- Bob
+    'outlook',
+    'bob@example.com',
+    'eyJ0eXAiOiJKV_bob_token...',
+    'MC9_bob_outlook_refresh_token',
+    NOW() + INTERVAL '1 hour',
+    'AAMkAGI2b_bob_calendar_id...',
+    TRUE,
+    TRUE
+),
+
+-- Row 4: Carol's Primary Outlook Calendar (Expired Token - Needs Refresh testing)
+(
+    '33333333-3333-3333-3333-333333333333', -- Carol
+    'outlook',
+    'carol@example.com',
+    'expired_carol_access_token_456',
+    'carol_refresh_me_token_789',
+    NOW() - INTERVAL '45 minutes', -- Expired 45 mins ago
+    'AAMkAGI3c_carol_calendar_id...',
+    TRUE,
+    TRUE
+),
+
+-- Row 5: Carol's Secondary Google Calendar (Deactivated/Paused by user)
+(
+    '33333333-3333-3333-3333-333333333333', -- Carol
+    'google',
+    'carol.personal@gmail.com',
+    'ya29.carol_personal_token',
+    '1//0_carol_personal_refresh',
+    NOW() - INTERVAL '10 days',
+    'carol.personal@gmail.com',
+    FALSE,
+    FALSE -- Explicitly inactive
+);
+
+INSERT INTO public.calendar_events (
+    calendar_id,
+    external_event_id,
+    title,
+    description,
+    start_time,
+    end_time,
+    location,
+    attendees,
+    is_recurring,
+    recurrence_rule
+) VALUES 
+-- Row 1: A standard 1-on-1 Sync on Alice's primary Google calendar
+(
+    (SELECT id FROM public.calendars WHERE email = 'alice@example.com' AND is_primary = TRUE LIMIT 1),
+    'gcal_evt_998123abc',
+    'Project Kickoff Sync',
+    'Initial alignment meeting to finalize project scope and milestones.',
+    '2026-06-01 10:00:00 -0400', -- Respecting Alice's America/New_York timezone
+    '2026-06-01 11:00:00 -0400',
+    'Zoom Video Call',
+    '[
+        {"name": "Alice Johnson", "email": "alice@example.com", "response": "accepted"},
+        {"name": "Bob Smith", "email": "bob@example.com", "response": "tentative"}
+     ]'::jsonb,
+    FALSE,
+    NULL
+),
+
+-- Row 2: A Marketing holiday event on Alice's secondary shared calendar
+(
+    (SELECT id FROM public.calendars WHERE email = 'alice@example.com' AND is_primary = FALSE LIMIT 1),
+    'gcal_evt_holiday_xyz789',
+    'Company Summer Picnic',
+    'Annual team outing! Food and drinks provided.',
+    '2026-07-04 12:00:00 -0400',
+    '2026-07-04 17:00:00 -0400',
+    'Central Park, Sector 4',
+    '[]'::jsonb, -- Empty JSONB array fallback
+    FALSE,
+    NULL
+),
+
+-- Row 3: A recurring design standup on Bob's primary Outlook calendar
+(
+    (SELECT id FROM public.calendars WHERE email = 'bob@example.com' AND is_primary = TRUE LIMIT 1),
+    'outlook_evt_772183hd',
+    'Daily Design Standup',
+    'Quick check-in on UI design review progress.',
+    '2026-06-02 09:00:00 -0700', -- Respecting Bob's America/Los_Angeles timezone
+    '2026-06-02 09:30:00 -0700',
+    'Microsoft Teams',
+    '[
+        {"name": "Bob Smith", "email": "bob@example.com", "response": "accepted"}
+     ]'::jsonb,
+    TRUE,
+    'FREQ=DAILY;BYDAY=MO,TU,WE,TH,FR' -- iCalendar RFC 5545 recurrence string format
+),
+
+-- Row 4: An external medical appointment on Carol's primary Outlook calendar
+(
+    (SELECT id FROM public.calendars WHERE email = 'carol@example.com' AND is_primary = TRUE LIMIT 1),
+    'outlook_evt_990111xx',
+    'Dentist Checkup',
+    'Routine cleaning and checkup.',
+    '2026-06-05 14:00:00 +0100', -- Respecting Carol's Europe/London timezone
+    '2026-06-05 15:00:00 +0100',
+    'Dental Care Clinic, London',
+    '[]'::jsonb,
+    FALSE,
+    NULL
+),
+
+-- Row 5: A lunch interview block on Carol's primary Outlook calendar
+(
+    (SELECT id FROM public.calendars WHERE email = 'carol@example.com' AND is_primary = TRUE LIMIT 1),
+    'outlook_evt_110222yy',
+    'Lunch & Interview - Senior Engineer',
+    'Review technical assessment during the final round panel.',
+    '2026-06-10 12:30:00 +0100',
+    '2026-06-10 13:30:00 +0100',
+    'Meeting Room 3B',
+    '[
+        {"name": "Carol Williams", "email": "carol@example.com", "response": "accepted"},
+        {"name": "Candidate X", "email": "candidate@external.com", "response": "accepted"}
+     ]'::jsonb,
+    FALSE,
+    NULL
+);
