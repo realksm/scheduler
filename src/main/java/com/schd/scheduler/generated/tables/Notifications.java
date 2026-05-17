@@ -198,19 +198,7 @@ public class Notifications extends TableImpl<NotificationsRecord> {
 
     @Override
     public List<ForeignKey<NotificationsRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY, Keys.NOTIFICATIONS__NOTIFICATIONS_BOOKING_ID_FKEY);
-    }
-
-    private transient UsersPath _users;
-
-    /**
-     * Get the implicit join path to the <code>public.users</code> table.
-     */
-    public UsersPath users() {
-        if (_users == null)
-            _users = new UsersPath(this, Keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY, null);
-
-        return _users;
+        return Arrays.asList(Keys.NOTIFICATIONS__NOTIFICATIONS_BOOKING_ID_FKEY, Keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY);
     }
 
     private transient BookingsPath _bookings;
@@ -223,6 +211,18 @@ public class Notifications extends TableImpl<NotificationsRecord> {
             _bookings = new BookingsPath(this, Keys.NOTIFICATIONS__NOTIFICATIONS_BOOKING_ID_FKEY, null);
 
         return _bookings;
+    }
+
+    private transient UsersPath _users;
+
+    /**
+     * Get the implicit join path to the <code>public.users</code> table.
+     */
+    public UsersPath users() {
+        if (_users == null)
+            _users = new UsersPath(this, Keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY, null);
+
+        return _users;
     }
 
     @Override

@@ -11,6 +11,9 @@ import com.schd.scheduler.generated.tables.Bookings.BookingsPath;
 import com.schd.scheduler.generated.tables.Calendars.CalendarsPath;
 import com.schd.scheduler.generated.tables.EventTypes.EventTypesPath;
 import com.schd.scheduler.generated.tables.Notifications.NotificationsPath;
+import com.schd.scheduler.generated.tables.OauthAccounts.OauthAccountsPath;
+import com.schd.scheduler.generated.tables.PasswordResetTokens.PasswordResetTokensPath;
+import com.schd.scheduler.generated.tables.RefreshTokens.RefreshTokensPath;
 import com.schd.scheduler.generated.tables.TeamMembers.TeamMembersPath;
 import com.schd.scheduler.generated.tables.Teams.TeamsPath;
 import com.schd.scheduler.generated.tables.records.UsersRecord;
@@ -282,6 +285,45 @@ public class Users extends TableImpl<UsersRecord> {
             _notifications = new NotificationsPath(this, null, Keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY.getInverseKey());
 
         return _notifications;
+    }
+
+    private transient OauthAccountsPath _oauthAccounts;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.oauth_accounts</code> table
+     */
+    public OauthAccountsPath oauthAccounts() {
+        if (_oauthAccounts == null)
+            _oauthAccounts = new OauthAccountsPath(this, null, Keys.OAUTH_ACCOUNTS__OAUTH_ACCOUNTS_USER_ID_FKEY.getInverseKey());
+
+        return _oauthAccounts;
+    }
+
+    private transient PasswordResetTokensPath _passwordResetTokens;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.password_reset_tokens</code> table
+     */
+    public PasswordResetTokensPath passwordResetTokens() {
+        if (_passwordResetTokens == null)
+            _passwordResetTokens = new PasswordResetTokensPath(this, null, Keys.PASSWORD_RESET_TOKENS__PASSWORD_RESET_TOKENS_USER_ID_FKEY.getInverseKey());
+
+        return _passwordResetTokens;
+    }
+
+    private transient RefreshTokensPath _refreshTokens;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.refresh_tokens</code> table
+     */
+    public RefreshTokensPath refreshTokens() {
+        if (_refreshTokens == null)
+            _refreshTokens = new RefreshTokensPath(this, null, Keys.REFRESH_TOKENS__REFRESH_TOKENS_USER_ID_FKEY.getInverseKey());
+
+        return _refreshTokens;
     }
 
     private transient TeamMembersPath _teamMembers;

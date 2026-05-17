@@ -223,19 +223,7 @@ public class EventTypes extends TableImpl<EventTypesRecord> {
 
     @Override
     public List<ForeignKey<EventTypesRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.EVENT_TYPES__EVENT_TYPES_USER_ID_FKEY, Keys.EVENT_TYPES__EVENT_TYPES_TEAM_ID_FKEY);
-    }
-
-    private transient UsersPath _users;
-
-    /**
-     * Get the implicit join path to the <code>public.users</code> table.
-     */
-    public UsersPath users() {
-        if (_users == null)
-            _users = new UsersPath(this, Keys.EVENT_TYPES__EVENT_TYPES_USER_ID_FKEY, null);
-
-        return _users;
+        return Arrays.asList(Keys.EVENT_TYPES__EVENT_TYPES_TEAM_ID_FKEY, Keys.EVENT_TYPES__EVENT_TYPES_USER_ID_FKEY);
     }
 
     private transient TeamsPath _teams;
@@ -248,6 +236,18 @@ public class EventTypes extends TableImpl<EventTypesRecord> {
             _teams = new TeamsPath(this, Keys.EVENT_TYPES__EVENT_TYPES_TEAM_ID_FKEY, null);
 
         return _teams;
+    }
+
+    private transient UsersPath _users;
+
+    /**
+     * Get the implicit join path to the <code>public.users</code> table.
+     */
+    public UsersPath users() {
+        if (_users == null)
+            _users = new UsersPath(this, Keys.EVENT_TYPES__EVENT_TYPES_USER_ID_FKEY, null);
+
+        return _users;
     }
 
     private transient BookingsPath _bookings;

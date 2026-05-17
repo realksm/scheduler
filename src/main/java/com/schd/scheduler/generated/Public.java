@@ -11,6 +11,9 @@ import com.schd.scheduler.generated.tables.CalendarEvents;
 import com.schd.scheduler.generated.tables.Calendars;
 import com.schd.scheduler.generated.tables.EventTypes;
 import com.schd.scheduler.generated.tables.Notifications;
+import com.schd.scheduler.generated.tables.OauthAccounts;
+import com.schd.scheduler.generated.tables.PasswordResetTokens;
+import com.schd.scheduler.generated.tables.RefreshTokens;
 import com.schd.scheduler.generated.tables.TeamMembers;
 import com.schd.scheduler.generated.tables.Teams;
 import com.schd.scheduler.generated.tables.TimeSlots;
@@ -73,6 +76,21 @@ public class Public extends SchemaImpl {
     public final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
 
     /**
+     * The table <code>public.oauth_accounts</code>.
+     */
+    public final OauthAccounts OAUTH_ACCOUNTS = OauthAccounts.OAUTH_ACCOUNTS;
+
+    /**
+     * The table <code>public.password_reset_tokens</code>.
+     */
+    public final PasswordResetTokens PASSWORD_RESET_TOKENS = PasswordResetTokens.PASSWORD_RESET_TOKENS;
+
+    /**
+     * The table <code>public.refresh_tokens</code>.
+     */
+    public final RefreshTokens REFRESH_TOKENS = RefreshTokens.REFRESH_TOKENS;
+
+    /**
      * The table <code>public.team_members</code>.
      */
     public final TeamMembers TEAM_MEMBERS = TeamMembers.TEAM_MEMBERS;
@@ -115,6 +133,9 @@ public class Public extends SchemaImpl {
             Calendars.CALENDARS,
             EventTypes.EVENT_TYPES,
             Notifications.NOTIFICATIONS,
+            OauthAccounts.OAUTH_ACCOUNTS,
+            PasswordResetTokens.PASSWORD_RESET_TOKENS,
+            RefreshTokens.REFRESH_TOKENS,
             TeamMembers.TEAM_MEMBERS,
             Teams.TEAMS,
             TimeSlots.TIME_SLOTS,

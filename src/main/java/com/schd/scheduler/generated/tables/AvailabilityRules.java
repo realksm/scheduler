@@ -75,7 +75,7 @@ public class AvailabilityRules extends TableImpl<AvailabilityRulesRecord> {
     /**
      * The column <code>public.availability_rules.days_of_week</code>.
      */
-    public final TableField<AvailabilityRulesRecord, Integer[]> DAYS_OF_WEEK = createField(DSL.name("days_of_week"), SQLDataType.INTEGER.nullable(false).array(), this, "");
+    public final TableField<AvailabilityRulesRecord, Integer[]> DAYS_OF_WEEK = createField(DSL.name("days_of_week"), SQLDataType.INTEGER.array().nullable(false), this, "");
 
     /**
      * The column <code>public.availability_rules.start_time</code>.

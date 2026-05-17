@@ -11,6 +11,9 @@ import com.schd.scheduler.generated.tables.CalendarEvents;
 import com.schd.scheduler.generated.tables.Calendars;
 import com.schd.scheduler.generated.tables.EventTypes;
 import com.schd.scheduler.generated.tables.Notifications;
+import com.schd.scheduler.generated.tables.OauthAccounts;
+import com.schd.scheduler.generated.tables.PasswordResetTokens;
+import com.schd.scheduler.generated.tables.RefreshTokens;
 import com.schd.scheduler.generated.tables.TeamMembers;
 import com.schd.scheduler.generated.tables.Teams;
 import com.schd.scheduler.generated.tables.TimeSlots;
@@ -57,6 +60,21 @@ public class Tables {
      * The table <code>public.notifications</code>.
      */
     public static final Notifications NOTIFICATIONS = Notifications.NOTIFICATIONS;
+
+    /**
+     * The table <code>public.oauth_accounts</code>.
+     */
+    public static final OauthAccounts OAUTH_ACCOUNTS = OauthAccounts.OAUTH_ACCOUNTS;
+
+    /**
+     * The table <code>public.password_reset_tokens</code>.
+     */
+    public static final PasswordResetTokens PASSWORD_RESET_TOKENS = PasswordResetTokens.PASSWORD_RESET_TOKENS;
+
+    /**
+     * The table <code>public.refresh_tokens</code>.
+     */
+    public static final RefreshTokens REFRESH_TOKENS = RefreshTokens.REFRESH_TOKENS;
 
     /**
      * The table <code>public.team_members</code>.

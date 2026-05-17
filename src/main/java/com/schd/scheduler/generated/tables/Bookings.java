@@ -232,20 +232,20 @@ public class Bookings extends TableImpl<BookingsRecord> {
 
     @Override
     public List<ForeignKey<BookingsRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.BOOKINGS__BOOKINGS_USER_ID_FKEY, Keys.BOOKINGS__BOOKINGS_EVENT_TYPE_ID_FKEY, Keys.BOOKINGS__BOOKINGS_CANCELER_USER_ID_FKEY);
+        return Arrays.asList(Keys.BOOKINGS__BOOKINGS_CANCELER_USER_ID_FKEY, Keys.BOOKINGS__BOOKINGS_EVENT_TYPE_ID_FKEY, Keys.BOOKINGS__BOOKINGS_USER_ID_FKEY);
     }
 
-    private transient UsersPath _bookingsUserIdFkey;
+    private transient UsersPath _bookingsCancelerUserIdFkey;
 
     /**
      * Get the implicit join path to the <code>public.users</code> table, via
-     * the <code>bookings_user_id_fkey</code> key.
+     * the <code>bookings_canceler_user_id_fkey</code> key.
      */
-    public UsersPath bookingsUserIdFkey() {
-        if (_bookingsUserIdFkey == null)
-            _bookingsUserIdFkey = new UsersPath(this, Keys.BOOKINGS__BOOKINGS_USER_ID_FKEY, null);
+    public UsersPath bookingsCancelerUserIdFkey() {
+        if (_bookingsCancelerUserIdFkey == null)
+            _bookingsCancelerUserIdFkey = new UsersPath(this, Keys.BOOKINGS__BOOKINGS_CANCELER_USER_ID_FKEY, null);
 
-        return _bookingsUserIdFkey;
+        return _bookingsCancelerUserIdFkey;
     }
 
     private transient EventTypesPath _eventTypes;
@@ -260,17 +260,17 @@ public class Bookings extends TableImpl<BookingsRecord> {
         return _eventTypes;
     }
 
-    private transient UsersPath _bookingsCancelerUserIdFkey;
+    private transient UsersPath _bookingsUserIdFkey;
 
     /**
      * Get the implicit join path to the <code>public.users</code> table, via
-     * the <code>bookings_canceler_user_id_fkey</code> key.
+     * the <code>bookings_user_id_fkey</code> key.
      */
-    public UsersPath bookingsCancelerUserIdFkey() {
-        if (_bookingsCancelerUserIdFkey == null)
-            _bookingsCancelerUserIdFkey = new UsersPath(this, Keys.BOOKINGS__BOOKINGS_CANCELER_USER_ID_FKEY, null);
+    public UsersPath bookingsUserIdFkey() {
+        if (_bookingsUserIdFkey == null)
+            _bookingsUserIdFkey = new UsersPath(this, Keys.BOOKINGS__BOOKINGS_USER_ID_FKEY, null);
 
-        return _bookingsCancelerUserIdFkey;
+        return _bookingsUserIdFkey;
     }
 
     private transient BookingAttendeesPath _bookingAttendees;
