@@ -16,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 public class UserRepository {
     private final DSLContext dsl;
 
+    public DSLContext dsl() {
+        return dsl;
+    }
+
     public Optional<UsersRecord> findById(UUID id) {
         return dsl.selectFrom(Users.USERS)
             .where(Users.USERS.ID.eq(id))
