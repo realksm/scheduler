@@ -31,7 +31,7 @@ public class CalendarEventController {
 
     private final CalendarEventService calendarEventService;
 
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<List<CalendarEventResponseDto>> getEvents(
             @PathVariable UUID calendarId,
             @RequestParam(required = false) OffsetDateTime start,
@@ -61,7 +61,7 @@ public class CalendarEventController {
         return ResponseEntity.ok(records.stream().map(this::toResponse).toList());
     }
 
-    @PostMapping
+    @PostMapping("/me")
     public ResponseEntity<CalendarEventResponseDto> create(
             @PathVariable UUID calendarId,
             @Valid @RequestBody CalendarEventRequestDto request) {

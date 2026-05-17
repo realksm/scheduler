@@ -32,7 +32,7 @@ public class AvailabilityController {
 
     private final AvailabilityService availabilityService;
 
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<List<AvailabilityResponseDto>> getMyRules() {
         UUID userId = getCurrentUserId();
         List<AvailabilityRulesRecord> records = availabilityService.findByUserId(userId);
@@ -53,7 +53,7 @@ public class AvailabilityController {
         return ResponseEntity.ok(records.stream().map(this::toResponse).toList());
     }
 
-    @PostMapping
+    @PostMapping("/me")
     public ResponseEntity<AvailabilityResponseDto> create(@Valid @RequestBody AvailabilityRequestDto request) {
         AvailabilityRulesRecord record = new AvailabilityRulesRecord();
         record.setUserId(getCurrentUserId());

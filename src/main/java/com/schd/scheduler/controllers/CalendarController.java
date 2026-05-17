@@ -31,7 +31,7 @@ public class CalendarController {
 
     private final CalendarService calendarService;
 
-    @GetMapping
+    @GetMapping("/me")
     public ResponseEntity<List<CalendarResponseDto>> getMyCalendars() {
         UUID userId = getCurrentUserId();
         List<CalendarsRecord> records = calendarService.findByUserId(userId);
@@ -46,7 +46,7 @@ public class CalendarController {
             .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+    @PostMapping("/me")
     public ResponseEntity<CalendarResponseDto> create(@Valid @RequestBody CalendarRequestDto request) {
         CalendarsRecord record = new CalendarsRecord();
         record.setUserId(getCurrentUserId());
