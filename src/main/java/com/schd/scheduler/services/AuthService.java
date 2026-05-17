@@ -1,6 +1,8 @@
 package com.schd.scheduler.services;
 
+import java.security.SecureRandom;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.UUID;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +16,8 @@ import com.schd.scheduler.generated.tables.records.UsersRecord;
 
 import lombok.RequiredArgsConstructor;
 
+import static org.jooq.impl.DSL.*;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -21,6 +25,8 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+
+    private static final long REFRESH_TOKEN_EXPIRY_DAYS = 7;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -45,7 +51,9 @@ public class AuthService {
         userRepository.create(user);
 
         String token = jwtService.generateToken(user.getId(), user.getEmail());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getUsername());
+        String refreshToken = createRefreshToken(user.getId());
+        
+        return new AuthResponse(token, refreshToken, user.getId(), user.getEmail(), user.getUsername());
     }
 
     public AuthResponse login(LoginRequest request) {
@@ -57,6 +65,29 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getId(), user.getEmail());
-        return new AuthResponse(token, user.getId(), user.getEmail(), user.getUsername());
+        String refreshToken = createRefreshToken(user.getId());
+        
+        return new AuthResponse(token, refreshToken, user.getId(), user.getEmail(), user.getUsername());
+    }
+
+    private String createRefreshToken(UUID userId) {
+        String token = generateToken();
+        var dsl = userRepository.dsl();
+        var now = OffsetDateTime.now();
+
+        dsl.insertInto(table("refresh_tokens"))
+            .set(field("user_id"), userId)
+            .set(field("token"), token)
+            .set(field("expires_at"), now.plusDays(REFRESH_TOKEN_EXPIRY_DAYS))
+            .set(field("created_at"), now)
+            .execute();
+
+        return token;
+    }
+
+    private String generateToken() {
+        byte[] bytes = new byte[32];
+        new SecureRandom().nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 }
